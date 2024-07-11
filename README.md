@@ -48,6 +48,8 @@ options = {
     useSubunits: true,              // Use subunits (metres/feet) in tooltips if distances are less than 1 kilometre/landmile
     clearMeasurementsOnStop: true,  // Clear all measurements when Measure Control is switched off
     showBearings: false,            // Whether bearings are displayed within the tooltips
+    useRhumbLines: false,           // Whether to use simple rhumb lines instead of great circle measurements
+    arcpoints: 99,                  // Number of points to draw in each arc (when using default great circle method)
     bearingTextIn: 'In',            // language dependend label for inbound bearings
     bearingTextOut: 'Out',          // language dependend label for outbound bearings
     tooltipTextFinish: 'Click to <b>finish line</b><br>',
