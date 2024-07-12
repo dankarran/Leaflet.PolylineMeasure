@@ -19,6 +19,7 @@
 - [**Demo 3**](https://ppete2.github.io/Leaflet.PolylineMeasure/demo3.html) (nautical mile units, bearings, without Unit Control and Clear Control buttons)
 - [**Demo 4**](https://ppete2.github.io/Leaflet.PolylineMeasure/demo4.html) (two maps)
 - [**Demo 5**](https://ppete2.github.io/Leaflet.PolylineMeasure/demo5.html) (programatically providing polyline points - "Seeding Data")
+- [**Demo 6**](https://ppete2.github.io/Leaflet.PolylineMeasure/demo6.html) (using simple rhumb lines instead of great circles)
 
 ![Screenshot](https://ppete2.github.io/Leaflet.PolylineMeasure/screenshot.jpg)
 
