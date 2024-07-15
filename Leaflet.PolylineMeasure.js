@@ -777,7 +777,6 @@
 
         /**
          * Update the tooltip distance
-         * @TODO param details
          * @param currentTooltip        Current tooltip
          * @param prevTooltip           Previous tooltip
          * @param {Number} total        Total distance
@@ -1163,8 +1162,6 @@
 
                 // get Coords of each Point of the current Polyline
                 var lineCoords = this._arrPolylines[lineNr].polylinePath.getLatLngs();
-                // TODO: GC uses 0/1 whereas rhumbLines use lat/lng for some reason ... debug/standardise if necessary
-                //console.log('lineCoords 1', lineCoords);
 
                 // generate coords up to this point
                 var arc1 = this._generateLineCoords (this._arrPolylines[lineNr].circleCoords[arrowNr], e.latlng);
