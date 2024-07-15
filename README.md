@@ -5,7 +5,7 @@
 * Measuring in **metric system** (metres, kilometres), in **imperial system** (feet, landmiles), or in **nautical miles**.
 * Lines are drawn as realistic arcs. **Bearings** and **distances** are calculated considering [**Great-circle distance**](https://en.wikipedia.org/wiki/Great-circle_distance) which is the shortest path between 2 points on Earth.
 * **Arrows** indicating the **real midways** of the line's great-circle **distances**, not their optical middle which is different due to projection, especially in high latitudes.
-* Lines can be displayed as straight rhumb lines instead of great circle arcs if preferred.
+* Lines can be displayed as straight **rhumb lines** instead of great-circle arcs if preferred.
 * To **finish** drawing a line just *doubleclick*, or *singleclick* onto the last (=orange) point, or *press "ESC"-key*.
 * **Moving** of line's points afterwards is possible by clicking and draging them. *(This feature can not be guaranteed to work on every **mobile** browser using touch input, e.g. with Chrome Mobile it isn't working right now)*
 * To **continue** a line after it has been finished, hold the *Ctrl-Key* while clicking onto the first or last point of a line.
