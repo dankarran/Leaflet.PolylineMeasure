@@ -568,11 +568,56 @@
             this._arrPolylines.map (this._computeDistance.bind(this));
         },
 
+        /**
+         * Calculate the distance between two points
+         *
+         * @param {L.LatLng} _from    Point to measure from
+         * @param {L.LatLng} _to      Point to measure to
+         * @returns {number|*}
+         * @private
+         */
+        _distanceBetween: function(_from, _to) {
+            return this.options.useRhumbLines ? this._rhumbDistance(_from, _to) : _from.distanceTo(_to);
+        },
+
+        /**
+         * Returns the distance travelling between two points along a rhumb line.
+         *
+         * see rhumbDistanceTo() from https://cdn.jsdelivr.net/npm/geodesy@2/latlon-spherical.js
+         * and www.edwilliams.org/avform.htm#Rhumb
+         *
+         * @param {L.LatLng} _from    Point to measure from
+         * @param {L.LatLng} _to      Point to measure to
+         * @param {number} radius     Radius of earth
+         * @returns {number}          Distance in km between this point and destination point (same units as radius).
+         * @private
+         */
+        _rhumbDistance: function(_from, _to, radius=6371e3) {
+            const R = radius;
+            const φ1 = _from.lat * Math.PI / 180;
+            const φ2 = _to.lat * Math.PI / 180;
+            const Δφ = φ2 - φ1;
+            let Δλ = Math.abs(_to.lng - _from.lng) * Math.PI / 180;
+            // if dLon over 180° take shorter rhumb line across the anti-meridian:
+            if (Math.abs(Δλ) > Math.PI) Δλ = Δλ > 0 ? -(2 * Math.PI - Δλ) : (2 * Math.PI + Δλ);
+
+            // on Mercator projection, longitude distances shrink by latitude; q is the 'stretch factor'
+            // q becomes ill-conditioned along E-W line (0/0); use empirical tolerance to avoid it (note ε is too small)
+            const Δψ = Math.log(Math.tan(φ2 / 2 + Math.PI / 4) / Math.tan(φ1 / 2 + Math.PI / 4));
+            const q = Math.abs(Δψ) > 10e-12 ? Δφ / Δψ : Math.cos(φ1);
+
+            // distance is pythagoras on 'stretched' Mercator projection, √(Δφ² + q²·Δλ²)
+            const δ = Math.sqrt(Δφ*Δφ + q*q * Δλ*Δλ); // angular distance in radians
+            const d = δ * R;
+
+            return d;
+        },
+
         _computeDistance: function(line) {
             var totalDistance = 0;
             line.circleCoords.map (function(point, point_index) {
                 if (point_index >= 1) {
-                    var distance = line.circleCoords [point_index - 1].distanceTo (line.circleCoords [point_index]);
+                    var distance = this._distanceBetween(line.circleCoords [point_index - 1], line.circleCoords [point_index]);
                     totalDistance += distance;
                     this._updateTooltip (line.tooltips [point_index], line.tooltips [point_index - 1], totalDistance, distance, line.circleCoords [point_index - 1], line.circleCoords [point_index]);
                 }
@@ -606,7 +651,7 @@
                     this._arrPolylines[lineNr].tooltips [0]._icon.innerHTML = text;
                     this._arrPolylines[lineNr].tooltips.map (function (item, index) {
                         if (index >= 1) {
-                            var distance = this._arrPolylines[lineNr].circleCoords[index-1].distanceTo (this._arrPolylines[lineNr].circleCoords[index]);
+                            var distance = this._distanceBetween(this._arrPolylines[lineNr].circleCoords[index-1], this._arrPolylines[lineNr].circleCoords[index]);
                             var lastCircleCoords = this._arrPolylines[lineNr].circleCoords[index - 1];
                             var mouseCoords = this._arrPolylines[lineNr].circleCoords[index];
                             totalDistance += distance;
@@ -919,7 +964,7 @@
             var currentTooltip = this._currentLine.tooltips.last();
             var prevTooltip = this._currentLine.tooltips.slice(-2,-1)[0];
             currentTooltip.setLatLng (mouseCoords);
-            var distanceSegment = mouseCoords.distanceTo (lastCircleCoords);
+            var distanceSegment = this._distanceBetween(mouseCoords, lastCircleCoords);
             this._updateTooltip (currentTooltip, prevTooltip, this._currentLine.distance + distanceSegment, distanceSegment, lastCircleCoords, mouseCoords);
         },
 
@@ -1003,7 +1048,7 @@
                         arrowMarker.cntLine = polylineState._currentLine.id;
                         arrowMarker.cntArrow = polylineState._cntCircle - 1;
                         polylineState._currentLine.arrowMarkers.push (arrowMarker);
-                        var distanceSegment = lastCircleCoords.distanceTo (mouseCoords);
+                        var distanceSegment = polylineState._distanceBetween(lastCircleCoords, mouseCoords);
                         this.distance += distanceSegment;
                         var currentTooltip = polylineState._currentLine.tooltips.last();
                         var prevTooltip = polylineState._currentLine.tooltips.slice(-1,-2)[0];
@@ -1202,7 +1247,7 @@
                 var totalDistance = 0;
                 this._arrPolylines[lineNr].tooltips.map (function (item, index) {
                     if (index >= 1) {
-                        var distance = this._arrPolylines[lineNr].circleCoords[index-1].distanceTo (this._arrPolylines[lineNr].circleCoords[index]);
+                        var distance = this._distanceBetween(this._arrPolylines[lineNr].circleCoords[index-1], this._arrPolylines[lineNr].circleCoords[index]);
                         var lastCircleCoords = this._arrPolylines[lineNr].circleCoords[index - 1];
                         var mouseCoords = this._arrPolylines[lineNr].circleCoords[index];
                         totalDistance += distance;
@@ -1273,7 +1318,7 @@
             // update tooltip texts of each tooltip
             this._arrPolylines[lineNr].tooltips.map (function (item, index) {
                 if (index >= 1) {
-                    var distance = this._arrPolylines[lineNr].circleCoords[index-1].distanceTo (this._arrPolylines[lineNr].circleCoords[index]);
+                    var distance = this._distanceBetween(this._arrPolylines[lineNr].circleCoords[index-1], this._arrPolylines[lineNr].circleCoords[index]);
                     var lastCircleCoords = this._arrPolylines[lineNr].circleCoords[index - 1];
                     var mouseCoords = this._arrPolylines[lineNr].circleCoords[index];
                     totalDistance += distance;
@@ -1292,7 +1337,7 @@
             this._rubberlinePath2.setLatLngs (this._generateLineCoords (mouseCoords, currentCircleCoords));
             this._tooltipNew.setLatLng (mouseCoords);
             var totalDistance = 0;
-            var distance = mouseCoords.distanceTo (this._arrPolylines[lineNr].circleCoords[0]);
+            var distance = this._distanceBetween(mouseCoords, this._arrPolylines[lineNr].circleCoords[0]);
             var lastCircleCoords = mouseCoords;
             var currentCoords = this._arrPolylines[lineNr].circleCoords[0];
             totalDistance += distance;
@@ -1301,7 +1346,7 @@
             this._updateTooltip (currentTooltip, prevTooltip, totalDistance, distance, lastCircleCoords, currentCoords);
             this._arrPolylines[lineNr].tooltips.map (function (item, index) {
                 if (index >= 1) {
-                    var distance = this._arrPolylines[lineNr].circleCoords[index-1].distanceTo (this._arrPolylines[lineNr].circleCoords[index]);
+                    var distance = this._distanceBetween(this._arrPolylines[lineNr].circleCoords[index-1], this._arrPolylines[lineNr].circleCoords[index]);
                     var lastCircleCoords = this._arrPolylines[lineNr].circleCoords[index - 1];
                     var mouseCoords = this._arrPolylines[lineNr].circleCoords[index];
                     totalDistance += distance;
@@ -1459,12 +1504,12 @@
                       var prevTooltip = this._currentLine.tooltips[index-1];
                       var lastCircleCoords = this._currentLine.circleCoords[index - 1];
                       if(index === arr.length - 1) {
-                          distance = this._currentLine.circleCoords[index-1].distanceTo (e1.latlng);
+                          distance = this._distanceBetween(this._currentLine.circleCoords[index-1], e1.latlng);
                           mouseCoords = e1.latlng;
                           // if this is the last Circle (mouse cursor) then don't sum the distance, but update tooltip like it was summed
                           this._updateTooltip (item, prevTooltip, totalDistanceUnfinishedLine + distance, distance, lastCircleCoords, mouseCoords);
                       } else {
-                          distance = this._currentLine.circleCoords[index-1].distanceTo (this._currentLine.circleCoords[index]);
+                          distance = this._distanceBetween(this._currentLine.circleCoords[index-1], this._currentLine.circleCoords[index]);
                           mouseCoords = this._currentLine.circleCoords[index];
                           // if this is not the last Circle (mouse cursor) then sum the distance
                           totalDistanceUnfinishedLine += distance;
@@ -1553,7 +1598,7 @@
                     var totalDistance = 0;
                     this._arrPolylines[lineNr].tooltips.map (function (item, index) {
                         if (index >= 1) {
-                            var distance = this._arrPolylines[lineNr].circleCoords[index-1].distanceTo (this._arrPolylines[lineNr].circleCoords[index]);
+                            var distance = this._distanceBetween(this._arrPolylines[lineNr].circleCoords[index-1], this._arrPolylines[lineNr].circleCoords[index]);
                             var lastCircleCoords = this._arrPolylines[lineNr].circleCoords[index - 1];
                             var mouseCoords = this._arrPolylines[lineNr].circleCoords[index];
                             totalDistance += distance;
