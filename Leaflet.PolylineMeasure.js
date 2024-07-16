@@ -598,8 +598,6 @@
             const φ2 = _to.lat * Math.PI / 180;
             const Δφ = φ2 - φ1;
             let Δλ = Math.abs(_to.lng - _from.lng) * Math.PI / 180;
-            // if dLon over 180° take shorter rhumb line across the anti-meridian:
-            if (Math.abs(Δλ) > Math.PI) Δλ = Δλ > 0 ? -(2 * Math.PI - Δλ) : (2 * Math.PI + Δλ);
 
             // on Mercator projection, longitude distances shrink by latitude; q is the 'stretch factor'
             // q becomes ill-conditioned along E-W line (0/0); use empirical tolerance to avoid it (note ε is too small)
@@ -859,9 +857,6 @@
 
                 var y = Math.log(Math.tan(Math.PI/4+lat2/2)/Math.tan(Math.PI/4+lat1/2));
                 var x = lng2 - lng1;
-
-                // if dLon over 180° take shorter rhumb line across the anti-meridian:
-                if (Math.abs(x) > Math.PI) x = x>0 ? -(2*Math.PI-x) : (2*Math.PI+x);
 
                 if (direction === "inbound") {
                     var brng = Math.atan2(x, y) * 180/Math.PI - 180;
