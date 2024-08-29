@@ -1,7 +1,7 @@
 
 
 # Leaflet.PolylineMeasure
-* Leaflet Plugin to **measure distances** of simple lines as well as of complex polylines.
+* Leaflet Plugin to **measure distances** of simple lines as well as of complex polylines. 
 * Measuring in **metric system** (metres, kilometres), in **imperial system** (feet, landmiles), or in **nautical miles**.
 * Lines are drawn as realistic arcs. **Bearings** and **distances** are calculated considering [**Great-circle distance**](https://en.wikipedia.org/wiki/Great-circle_distance) which is the shortest path between 2 points on Earth.
 * **Arrows** indicating the **real midways** of the line's great-circle **distances**, not their optical middle which is different due to projection, especially in high latitudes.
@@ -12,24 +12,25 @@
 * To **add** points, hold the *Ctrl-Key* while clicking onto an arrow.
 * To **delete** points, hold the *Shift-Key* while clicking onto a point.
 * It is an evolution of jtreml's Plugin [leaflet.measure](https://github.com/jtreml/leaflet.measure) since the original plugin hasn't been bugfixed for years. I modified it to work again with **Leaflet v1.0 and newer** (still runs with Leaflet v0.7) and added functional and optical improvements.
+* This version is forked from [ppete2/Leaflet.PolylineMeasure](https://github.com/ppete2/Leaflet.PolylineMeasure) to add support for rhumb lines.
 
 ## Demos
 * Please take a look at these demos:
-- [**Demo 1**](https://ppete2.github.io/Leaflet.PolylineMeasure/demo1.html) (kilometre units, bearings, with Clear Control and Unit Control buttons)
-- [**Demo 2**](https://ppete2.github.io/Leaflet.PolylineMeasure/demo2.html)  (landmile units, without bearings, without Unit Control button)
-- [**Demo 3**](https://ppete2.github.io/Leaflet.PolylineMeasure/demo3.html) (nautical mile units, bearings, without Unit Control and Clear Control buttons)
-- [**Demo 4**](https://ppete2.github.io/Leaflet.PolylineMeasure/demo4.html) (two maps)
-- [**Demo 5**](https://ppete2.github.io/Leaflet.PolylineMeasure/demo5.html) (programatically providing polyline points - "Seeding Data")
-- [**Demo 6**](https://ppete2.github.io/Leaflet.PolylineMeasure/demo6.html) (using simple rhumb lines instead of great circles)
+- [**Demo 1**](https://dankarran.github.io/Leaflet.PolylineMeasure/demo1.html) (kilometre units, bearings, with Clear Control and Unit Control buttons)
+- [**Demo 2**](https://dankarran.github.io/Leaflet.PolylineMeasure/demo2.html)  (landmile units, without bearings, without Unit Control button)
+- [**Demo 3**](https://dankarran.github.io/Leaflet.PolylineMeasure/demo3.html) (nautical mile units, bearings, without Unit Control and Clear Control buttons)
+- [**Demo 4**](https://dankarran.github.io/Leaflet.PolylineMeasure/demo4.html) (two maps)
+- [**Demo 5**](https://dankarran.github.io/Leaflet.PolylineMeasure/demo5.html) (programatically providing polyline points - "Seeding Data")
+- [**Demo 6**](https://dankarran.github.io/Leaflet.PolylineMeasure/demo6.html) (using simple rhumb lines instead of great circles)
 
-![Screenshot](https://ppete2.github.io/Leaflet.PolylineMeasure/screenshot.jpg)
+![Screenshot](https://dankarran.github.io/Leaflet.PolylineMeasure/screenshot.jpg)
 
 ## Usage
 
 Add 2 code lines within your **HTML-file** to load the .css and .js files of the plugin:
 ```html
-<link rel="stylesheet" href="https://ppete2.github.io/Leaflet.PolylineMeasure/Leaflet.PolylineMeasure.css" />
-<script src="https://ppete2.github.io/Leaflet.PolylineMeasure/Leaflet.PolylineMeasure.js"></script>
+<link rel="stylesheet" href="https://dankarran.github.io/Leaflet.PolylineMeasure/Leaflet.PolylineMeasure.css" />
+<script src="https://dankarran.github.io/Leaflet.PolylineMeasure/Leaflet.PolylineMeasure.js"></script>
 ```
 
 Add 1 code line within your **Javascript-file** to add the plugin's control into your Leaflet map.  
@@ -143,7 +144,7 @@ map.on('polylinemeasure:insert', e => { /* e.latlng */ });
 map.on('polylinemeasure:move', e => { /* e.latlng ; e.sourceTarget._latlng */ });
 map.on('polylinemeasure:remove', e => { /* e.latlng ; e.sourceTarget._latlng */ });
 ```
-* Please take a look at [**Demo 1**](https://ppete2.github.io/Leaflet.PolylineMeasure/demo1.html), where those events get listed in the JS console of your browser
+* Please take a look at [**Demo 1**](https://dankarran.github.io/Leaflet.PolylineMeasure/demo1.html), where those events get listed in the JS console of your browser
 
 ## Seeding Data
 You can programatically draw measured polylines using the `.seed` method.  It takes an array of arrays of `L.LatLng`, which enables drawing multiple, discontinuous polylines:
@@ -166,4 +167,4 @@ const line2coords = [
 polylineMeasure.seed([line1coords, line2coords])
 ```
 
-* Please take a look at [**Demo 5**](https://ppete2.github.io/Leaflet.PolylineMeasure/demo5.html), where multiple polylines are drawn and measured programatically.
+* Please take a look at [**Demo 5**](https://dankarran.github.io/Leaflet.PolylineMeasure/demo5.html), where multiple polylines are drawn and measured programatically.
